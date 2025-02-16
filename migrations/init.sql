@@ -18,6 +18,18 @@ CREATE TABLE items (
     price INT NOT NULL
 );
 
+INSERT INTO items (item_type, price) VALUES 
+('t-shirt', 80),
+('cup', 20),
+('book', 50),
+('pen', 10),
+('powerbank', 200),
+('hoody', 300),
+('umbrella', 200),
+('socks', 10),
+('wallet', 50),
+('pink-hoody', 500);
+
 CREATE TABLE inventory (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,

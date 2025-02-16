@@ -25,15 +25,15 @@ CREATE TABLE inventory (
     quantity INT NOT NULL
 );
 
+CREATE TABLE receivers (
+    id INT NOT NULL 
+);
+
 CREATE TABLE coin_history (
     id SERIAL PRIMARY KEY,
     sender_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     receiver_id INT NOT NULL REFERENCES receivers(id) ON DELETE CASCADE,
     amount INT NOT NULL
-);
-
-CREATE TABLE receivers (
-    id INT NOT NULL 
 );
 
 CREATE TABLE coins_balance (

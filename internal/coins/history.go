@@ -1,0 +1,86 @@
+package coins
+
+import (
+	"database/sql"
+	"fmt"
+	"merch-shop/internal/utils"
+)
+
+func (repo *CoinsDBRepostitory) GetHistory(userID int) (*History, error) {
+	hst := &History{}
+	query := `SELECT sender_id, amount FROM coin_history WHERE receiver_id = $1;`
+	errStr := "error while selecting the history of the input transactions"
+	transactions, err := GetTransactions(repo.dtb, query, errStr, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	hst.Received = make([]Input, len(transactions))
+	for idx, transaction := range transactions {
+		hst.Received[idx].FromUser = transaction.User
+		hst.Received[idx].Amount = transaction.Amount
+	}
+
+	errStr = "error while selecting the history of the output transactions"
+	query = `SELECT receiver_id, amount FROM coin_history WHERE sender_id = $1;`
+	transactions, err = GetTransactions(repo.dtb, query, errStr, userID)
+	if err != nil {
+		return nil, err
+	}
+	hst.Sent = make([]Output, len(transactions))
+	for idx, transaction := range transactions {
+		hst.Sent[idx].ToUser = transaction.User
+		hst.Sent[idx].Amount = transaction.Amount
+	}
+
+	return hst, nil
+}
+
+func GetTransactions(dtb *sql.DB, query, errStr string, userID int) ([]Transaction, error) {
+	rows, err := dtb.Query(query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %v", errStr, err)
+	}
+	defer rows.Close()
+
+	transactions := make([]Transaction, 0)
+	for rows.Next() {
+		transaction := Transaction{}
+		err := rows.Scan(&transaction.User, &transaction.Amount)
+		if err != nil {
+			return nil, fmt.Errorf("error from method `Scan`, package sql: %v", err)
+		}
+		transactions = append(transactions, transaction)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error while iterating over rows returned by query: %v", err)
+	}
+	return transactions, nil
+}
+
+func GetOutput(dtb *sql.DB, userID int) ([]Input, error) {
+	query := `SELECT receiver_id, amount FROM coin_history WHERE sender_id = $1;`
+	rows, err := dtb.Query(query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("error while selecting the history of the output transactions: %v", err)
+	}
+	defer rows.Close()
+
+	inputs := make([]Input, 0)
+	for rows.Next() {
+		inp := Input{}
+		var receiverID int
+		err := rows.Scan(&receiverID, &inp.Amount)
+		if err != nil {
+			return nil, fmt.Errorf("error from method `Scan`, package sql: %v", err)
+		}
+		inp.FromUser = utils.GetUsername(dtb, receiverID)
+		inputs = append(inputs, inp)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error while iterating over rows returned by query: %v", err)
+	}
+	return inputs, nil
+}

@@ -38,7 +38,7 @@ CREATE TABLE inventory (
 );
 
 CREATE TABLE receivers (
-    id INT NOT NULL 
+    id INT UNIQUE NOT NULL 
 );
 
 CREATE TABLE coin_history (

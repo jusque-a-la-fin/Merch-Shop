@@ -8,7 +8,6 @@ RUN go mod download
 COPY cmd/ ./cmd
 COPY internal/ ./internal
 COPY migrations/ ./migrations
-COPY test/ ./test
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd
 

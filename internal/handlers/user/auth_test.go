@@ -84,7 +84,7 @@ func TestUnauthorized(t *testing.T) {
 
 // TestOK тестирует успешный ответ
 func TestOK(t *testing.T) {
-	arq := uhd.AuthRequest{Username: "user2", Password: "password2"}
+	arq := uhd.AuthRequest{Username: "user3", Password: "password3"}
 	data, err := json.Marshal(arq)
 	if err != nil {
 		t.Fatalf("Ошибка сериализации тела запроса клиента: %v", err)

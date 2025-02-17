@@ -18,19 +18,27 @@ func (hnd *UserHandler) BuyAnItem(wrt http.ResponseWriter, rqt *http.Request) {
 		return
 	}
 
-	balance, userID := hnd.GetBalance(wrt, rqt)
-	if balance == nil || userID == nil {
-		return
-	}
-
 	itemType := mux.Vars(rqt)["item"]
-	price := hnd.InventoryRepo.GetPrice(itemType)
-	if price == nil {
-		log.Println("the item has not been found")
-		errSend := handlers.SendBadReq(wrt, "the item has not been found")
+	if itemType == "" {
+		errSend := handlers.SendBadReq(wrt, "an item is not present")
 		if errSend != nil {
 			log.Printf("error while sending the bad request message: %v\n", errSend)
 		}
+		return
+	}
+
+	price := hnd.InventoryRepo.GetPrice(itemType)
+	if price == nil {
+		log.Println("the item has not been found")
+		errSend := handlers.SendBadReq(wrt, "an item has not been found")
+		if errSend != nil {
+			log.Printf("error while sending the bad request message: %v\n", errSend)
+		}
+		return
+	}
+
+	balance, userID := hnd.GetBalance(wrt, rqt)
+	if balance == nil || userID == nil {
 		return
 	}
 

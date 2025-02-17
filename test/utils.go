@@ -3,9 +3,12 @@ package test
 import (
 	"encoding/json"
 	"log"
+	"merch-shop/internal/coins"
 	"merch-shop/internal/datastore"
 	"merch-shop/internal/handlers"
 	uhd "merch-shop/internal/handlers/user"
+	"merch-shop/internal/inventory"
+	"merch-shop/internal/session"
 	"merch-shop/internal/user"
 	"net/http"
 	"net/http/httptest"
@@ -19,9 +22,16 @@ func GetUserHandler() *uhd.UserHandler {
 	}
 
 	usr := user.NewDBRepo(dtb)
+	smg := session.NewSessionsManager()
+	coins := coins.NewDBRepo(dtb)
+	inv := inventory.NewDBRepo(dtb)
 	userHandler := &uhd.UserHandler{
-		UserRepo: usr,
+		UserRepo:      usr,
+		Sessions:      smg,
+		CoinsRepo:     coins,
+		InventoryRepo: inv,
 	}
+
 	return userHandler
 }
 

@@ -2,8 +2,10 @@ package user_test
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	uhd "merch-shop/internal/handlers/user"
+	"merch-shop/internal/session"
 	"merch-shop/test"
 	"net/http"
 	"net/http/httptest"
@@ -80,4 +82,21 @@ func TestSendCoinsUnauthorized(t *testing.T) {
 	if rr.Code != http.StatusUnauthorized {
 		t.Errorf("Ожидался код состояния ответа: %d, но получен: %d", http.StatusUnauthorized, rr.Code)
 	}
+}
+
+// TestSendCoinsOK тестирует успешный ответ
+func TestSendCoinsOK(t *testing.T) {
+	sess := &session.Session{ID: "1", UserName: "user1"}
+	ctx := context.WithValue(context.Background(), session.SessionKey, sess)
+	srq := uhd.SendCoinRequest{ToUser: "user2", Amount: 15}
+	data, err := json.Marshal(srq)
+	if err != nil {
+		t.Fatalf("Ошибка сериализации тела запроса клиента: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodPost, sendUrl, bytes.NewBuffer(data)).WithContext(ctx)
+	rr := httptest.NewRecorder()
+
+	uhr.SendCoins(rr, req)
+	test.CheckCodeAndMime(t, rr)
 }

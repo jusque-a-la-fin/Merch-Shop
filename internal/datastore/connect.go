@@ -15,7 +15,7 @@ func CreateNewDB() (*sql.DB, error) {
 	port := os.Getenv("DATABASE_PORT")
 	database := os.Getenv("DATABASE_NAME")
 
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", username, password, host, port, database)
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", username, password, host, port, database)
 	dtb, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, fmt.Errorf("error while connecting to database: %v", err)

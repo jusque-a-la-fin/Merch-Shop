@@ -6,8 +6,7 @@ import (
 )
 
 func (repo *UserDBRepostitory) GetAuthenticated(usr User) (*User, int, error) {
-	exists := utils.CheckUser(repo.dtb, usr.Password)
-
+	exists := utils.CheckUser(repo.dtb, usr.Username)
 	if exists {
 		passwordHash, err := GetPasswordHash(repo.dtb, usr.Username)
 		if err != nil {

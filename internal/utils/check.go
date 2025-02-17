@@ -11,18 +11,6 @@ func CheckUser(dtb *sql.DB, username string) bool {
 	return exists
 }
 
-func GetUsername(dtb *sql.DB, userID int) string {
-	var username string
-	dtb.QueryRow("SELECT username FROM users WHERE id = $1;", userID).Scan(&username)
-	return username
-}
-
-func GetUserID(dtb *sql.DB, username string) int {
-	var userID int
-	dtb.QueryRow("SELECT id FROM users WHERE username = $1;", username).Scan(&userID)
-	return userID
-}
-
 func CheckShop(dtb *sql.DB, shopname string) bool {
 	var exists bool
 	query := `SELECT EXISTS(SELECT 1 FROM shop WHERE shopname = $1);`

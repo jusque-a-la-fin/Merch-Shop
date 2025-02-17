@@ -4,6 +4,9 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL
 );
 
+INSERT INTO users (username, password_hash) VALUES 
+('user1', '08182008710cc0d57c774b85b4120804aea43aa32ed7304b020be43cfe39b8bc');
+
 CREATE TABLE shop (
     id SERIAL PRIMARY KEY,
     name TEXT UNIQUE NOT NULL

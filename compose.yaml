@@ -1,6 +1,8 @@
 services:
   avito-shop-service:
-      build: .
+      build:
+        context: .
+        dockerfile: Dockerfile
       container_name: avito-shop-service
       ports:
         - "8080:8080"
@@ -39,5 +41,25 @@ services:
       start_period: 10s
     networks:
       - internal
+
+  test: 
+    build: 
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: test
+    environment:
+        - DATABASE_PORT=5432
+        - DATABASE_USER=postgres
+        - DATABASE_PASSWORD=password
+        - DATABASE_NAME=shop
+        - DATABASE_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/merch-shop
+    networks:
+        - internal
+
 networks:
   internal:

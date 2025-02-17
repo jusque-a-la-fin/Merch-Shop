@@ -13,7 +13,6 @@ func (repo *CoinsDBRepostitory) SendCoins(transaction TransactionInDetail) (int,
 	receiverID := utils.GetUserID(repo.dtb, transaction.ReceiverName)
 
 	exists := utils.CheckUser(repo.dtb, transaction.ReceiverName)
-
 	if !exists {
 		exists := utils.CheckShop(repo.dtb, transaction.ReceiverName)
 		if !exists {

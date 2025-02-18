@@ -1,4 +1,4 @@
-FROM golang:1.23.5 AS build-stage
+FROM golang:1.24.0-alpine3.21 AS build-stage
 
 WORKDIR /merch-shop
 

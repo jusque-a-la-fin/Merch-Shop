@@ -61,5 +61,13 @@ services:
     networks:
         - internal
 
+  linters:
+    build: 
+      context: .
+      dockerfile: Dockerfile.linters
+    container_name: linters
+    networks:
+        - internal
+
 networks:
   internal:

@@ -6,6 +6,7 @@ import (
 	uhd "merch-shop/internal/handlers/user"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -97,4 +98,14 @@ func TestOK(t *testing.T) {
 	handler := http.HandlerFunc(uhr.GetAuthenticated)
 	handler.ServeHTTP(rr, req)
 	CheckCodeAndMime(t, rr)
+
+	var authResp uhd.AuthResponse
+	if err := json.NewDecoder(rr.Body).Decode(&authResp); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	parts := strings.Split(authResp.Token, ".")
+	if len(parts) != 3 {
+		t.Fatalf("Ошибка: строка не является JWT-токеном: %v", err)
+	}
 }

@@ -13,6 +13,10 @@ type AuthRequest struct {
 	Password string `json:"password"`
 }
 
+type AuthResponse struct {
+	Token string `json:"token"`
+}
+
 func (hnd *UserHandler) GetAuthenticated(wrt http.ResponseWriter, rqt *http.Request) {
 	if rqt.Method != http.MethodPost {
 		errSend := handlers.SendBadReq(wrt, "wrong http method")
@@ -67,15 +71,13 @@ func (hnd *UserHandler) GetAuthenticated(wrt http.ResponseWriter, rqt *http.Requ
 	}
 
 	tokenString := hnd.CreateSessionAndToken(wrt, user)
-	AuthResponse := struct {
-		Token string `json:"token"`
-	}{
+	resp := AuthResponse{
 		Token: tokenString,
 	}
 
 	wrt.Header().Set("Content-Type", "application/json")
 	wrt.WriteHeader(http.StatusOK)
-	errJSON := json.NewEncoder(wrt).Encode(AuthResponse)
+	errJSON := json.NewEncoder(wrt).Encode(resp)
 	if errJSON != nil {
 		log.Printf("error while sending response body: %v\n", errJSON)
 	}

@@ -1,14 +1,23 @@
 package inventory
 
-import "merch-shop/internal/utils"
+import (
+	"fmt"
+	"merch-shop/internal/utils"
+)
 
-func (repo *InventoryDBRepostitory) GetPrice(itemType string) *int {
-	exists := utils.CheckItem(repo.dtb, itemType)
+func (repo *InventoryDBRepostitory) GetPrice(itemType string) (*int, error) {
+	exists, err := utils.CheckItem(repo.dtb, itemType)
+	if err != nil {
+		return nil, err
+	}
 	if !exists {
-		return nil
+		return nil, nil
 	}
 
 	var price int
-	repo.dtb.QueryRow("SELECT price FROM items WHERE item_type = $1;", itemType).Scan(&price)
-	return &price
+	err = repo.dtb.QueryRow("SELECT price FROM items WHERE item_type = $1;", itemType).Scan(&price)
+	if err != nil {
+		return nil, fmt.Errorf("error while selecting the price of the item: %v", err)
+	}
+	return &price, nil
 }

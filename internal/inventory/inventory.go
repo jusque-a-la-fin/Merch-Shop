@@ -2,7 +2,7 @@ package inventory
 
 type InventoryRepo interface {
 	Get(userID string) ([]Item, error)
-	GetPrice(itemType string) *int
+	GetPrice(itemType string) (*int, error)
 	TakeAnItem(userID string, itemType string) error
 }
 

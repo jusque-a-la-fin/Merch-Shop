@@ -9,6 +9,12 @@ import (
 	"net/http"
 )
 
+type InfoResponse struct {
+	Coins       int              `json:"coins"`
+	Inventory   []inventory.Item `json:"inventory"`
+	CoinHistory coins.History    `json:"coinHistory"`
+}
+
 func (hnd *UserHandler) GetInfo(wrt http.ResponseWriter, rqt *http.Request) {
 	if rqt.Method != http.MethodGet {
 		errSend := handlers.SendBadReq(wrt, "wrong http method")
@@ -41,11 +47,7 @@ func (hnd *UserHandler) GetInfo(wrt http.ResponseWriter, rqt *http.Request) {
 		return
 	}
 
-	InfoResponse := struct {
-		Coins       int              `json:"coins"`
-		Inventory   []inventory.Item `json:"inventory"`
-		CoinHistory coins.History    `json:"coinHistory"`
-	}{
+	resp := InfoResponse{
 		Coins:       *balance,
 		Inventory:   items,
 		CoinHistory: *history,
@@ -53,7 +55,7 @@ func (hnd *UserHandler) GetInfo(wrt http.ResponseWriter, rqt *http.Request) {
 
 	wrt.Header().Set("Content-Type", "application/json")
 	wrt.WriteHeader(http.StatusOK)
-	errJSON := json.NewEncoder(wrt).Encode(InfoResponse)
+	errJSON := json.NewEncoder(wrt).Encode(resp)
 	if errJSON != nil {
 		log.Printf("error while sending response body: %v\n", errJSON)
 	}

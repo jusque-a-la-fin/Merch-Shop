@@ -19,7 +19,11 @@ func (hnd *UserHandler) BuyAnItem(wrt http.ResponseWriter, rqt *http.Request) {
 	}
 
 	itemType := mux.Vars(rqt)["item"]
-	price := hnd.InventoryRepo.GetPrice(itemType)
+	price, err := hnd.InventoryRepo.GetPrice(itemType)
+	if err != nil {
+		log.Println(err)
+	}
+
 	if price == nil {
 		log.Println("the item has not been found")
 		errSend := handlers.SendBadReq(wrt, "an item has not been found")

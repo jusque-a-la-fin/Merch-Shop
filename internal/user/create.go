@@ -13,7 +13,10 @@ func CreateUser(dtb *sql.DB, user User) (*User, error) {
 
 	var userID string
 	query := `INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id;`
-	_ = dtb.QueryRow(query, user.Username, hashedPassword).Scan(&userID)
+	err = dtb.QueryRow(query, user.Username, hashedPassword).Scan(&userID)
+	if err != nil {
+		return nil, fmt.Errorf("error while inserting a new user: %v", err)
+	}
 
 	query = `INSERT INTO receivers (id) VALUES ($1);`
 	_, err = dtb.Exec(query, userID)

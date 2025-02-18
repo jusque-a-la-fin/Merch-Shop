@@ -4,9 +4,16 @@ import "fmt"
 
 func (repo *InventoryDBRepostitory) TakeAnItem(userID string, itemType string) error {
 	var itemID int
-	repo.dtb.QueryRow("SELECT id FROM items WHERE item_type = $1;", itemType).Scan(&itemID)
+	err := repo.dtb.QueryRow("SELECT id FROM items WHERE item_type = $1;", itemType).Scan(&itemID)
+	if err != nil {
+		return fmt.Errorf("error while selecting the id of the item: %v", err)
+	}
 
-	exists := CheckInventory(repo.dtb, itemID)
+	exists, err := CheckInventory(repo.dtb, itemID)
+	if err != nil {
+		return err
+	}
+
 	if !exists {
 		query := `INSERT INTO inventory (user_id, item_id, quantity) VALUES ($1, $2, $3);`
 		_, err := repo.dtb.Exec(query, userID, itemID, 1)
@@ -21,7 +28,7 @@ func (repo *InventoryDBRepostitory) TakeAnItem(userID string, itemType string) e
 		     SET quantity = quantity + 1
 		     WHERE user_id = $1 AND item_id = $2;`
 
-	_, err := repo.dtb.Exec(query, userID, itemID)
+	_, err = repo.dtb.Exec(query, userID, itemID)
 	if err != nil {
 		return fmt.Errorf("error while updating the quantity of the item: %v", err)
 	}

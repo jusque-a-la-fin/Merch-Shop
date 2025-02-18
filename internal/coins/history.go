@@ -75,7 +75,13 @@ func GetOutput(dtb *sql.DB, userID string) ([]Input, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error from method `Scan`, package sql: %v", err)
 		}
-		inp.FromUser = utils.GetUsername(dtb, receiverID)
+
+		username, err := utils.GetUsername(dtb, receiverID)
+		if err != nil {
+			return nil, err
+		}
+
+		inp.FromUser = *username
 		inputs = append(inputs, inp)
 	}
 

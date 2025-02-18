@@ -2,11 +2,16 @@ package user
 
 import (
 	"fmt"
+	"log"
 	"merch-shop/internal/utils"
 )
 
 func (repo *UserDBRepostitory) GetAuthenticated(usr User) (*User, int, error) {
-	exists := utils.CheckUser(repo.dtb, usr.Username)
+	exists, err := utils.CheckUser(repo.dtb, usr.Username)
+	if err != nil {
+		log.Println(err)
+	}
+
 	if exists {
 		passwordHash, err := GetPasswordHash(repo.dtb, usr.Username)
 		if err != nil {

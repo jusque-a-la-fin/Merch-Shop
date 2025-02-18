@@ -8,6 +8,5 @@ RUN go mod download
 COPY cmd/ ./cmd
 COPY internal/ ./internal
 COPY migrations/ ./migrations
-COPY test/ ./test
 
 CMD go test -race ./... -coverprofile=coverage.out && go tool cover -html=coverage.out -o coverage.html

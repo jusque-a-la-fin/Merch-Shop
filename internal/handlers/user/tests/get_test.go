@@ -3,7 +3,6 @@ package user_test
 import (
 	"context"
 	"merch-shop/internal/session"
-	"merch-shop/test"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -23,7 +22,7 @@ func TestGetBadRequest(t *testing.T) {
 	handler := http.HandlerFunc(uhr.GetInfo)
 	handler.ServeHTTP(rr, req)
 	expected := "Неверный запрос: wrong http method"
-	test.HandleBadReq(t, rr, expected)
+	HandleBadReq(t, rr, expected)
 }
 
 // TestGetUnauthorized тестирует случай, когда не удалось пройти аутентификацию
@@ -50,5 +49,5 @@ func TestGetCoinsOK(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	uhr.GetInfo(rr, req)
-	test.CheckCodeAndMime(t, rr)
+	CheckCodeAndMime(t, rr)
 }

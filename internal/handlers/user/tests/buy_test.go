@@ -3,7 +3,6 @@ package user_test
 import (
 	"context"
 	"merch-shop/internal/session"
-	"merch-shop/test"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -24,7 +23,7 @@ func TestBuyBadRequest(t *testing.T) {
 	handler := http.HandlerFunc(uhr.BuyAnItem)
 	handler.ServeHTTP(rr, req)
 	expected := "Неверный запрос: wrong http method"
-	test.HandleBadReq(t, rr, expected)
+	HandleBadReq(t, rr, expected)
 
 	incorrectInputs := []struct {
 		Url    string
@@ -43,7 +42,7 @@ func TestBuyBadRequest(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 		rtr.ServeHTTP(rr, req)
-		test.HandleBadReq(t, rr, inp.ErrStr)
+		HandleBadReq(t, rr, inp.ErrStr)
 	}
 }
 

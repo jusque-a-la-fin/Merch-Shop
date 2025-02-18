@@ -2,26 +2,27 @@ package user_test
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	uhd "merch-shop/internal/handlers/user"
-	"merch-shop/test"
+	"merch-shop/internal/session"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
-var authUrl = "/api/auth"
-var uhr = test.GetUserHandler()
-var testsBadRequest = []uhd.AuthRequest{
+var sendUrl = "/api/sendCoin"
+
+var testsSendCoinsBadRequest = []uhd.SendCoinRequest{
 	{},
-	{Username: "username"},
-	{Password: "password"},
+	{ToUser: "username"},
+	{Amount: 5},
 }
 
-// TestBadRequest тестирует некорректный запрос
-func TestBadRequest(t *testing.T) {
+// TestSendCoinsBadRequest тестирует некорректный запрос
+func TestSendCoinsBadRequest(t *testing.T) {
 	// некорректный метод запроса
-	req, err := http.NewRequest(http.MethodGet, authUrl, nil)
+	req, err := http.NewRequest(http.MethodGet, sendUrl, nil)
 	if err != nil {
 		t.Fatal("Ошибка создания объекта *http.Request:", err)
 	}
@@ -30,17 +31,17 @@ func TestBadRequest(t *testing.T) {
 	handler := http.HandlerFunc(uhr.GetAuthenticated)
 	handler.ServeHTTP(rr, req)
 	expected := "Неверный запрос: wrong http method"
-	test.HandleBadReq(t, rr, expected)
+	HandleBadReq(t, rr, expected)
 
 	expected = "Неверный запрос: empty fields of request body"
 	// некорректные параметры тела запроса
-	for _, testBR := range testsBadRequest {
+	for _, testBR := range testsSendCoinsBadRequest {
 		data, err := json.Marshal(testBR)
 		if err != nil {
 			t.Fatalf("Ошибка сериализации тела запроса клиента: %v", err)
 		}
 
-		req, err := http.NewRequest(http.MethodPost, authUrl, bytes.NewBuffer(data))
+		req, err := http.NewRequest(http.MethodPost, sendUrl, bytes.NewBuffer(data))
 		if err != nil {
 			t.Fatal("Ошибка создания объекта *http.Request:", err)
 		}
@@ -48,10 +49,10 @@ func TestBadRequest(t *testing.T) {
 		rr := httptest.NewRecorder()
 		handler := http.HandlerFunc(uhr.GetAuthenticated)
 		handler.ServeHTTP(rr, req)
-		test.HandleBadReq(t, rr, expected)
+		HandleBadReq(t, rr, expected)
 	}
 
-	req, err = http.NewRequest(http.MethodPost, authUrl, bytes.NewBuffer([]byte("Hello, Wotld!")))
+	req, err = http.NewRequest(http.MethodPost, sendUrl, bytes.NewBuffer([]byte("Hello, Wotld!")))
 	if err != nil {
 		t.Fatal("Ошибка создания объекта *http.Request:", err)
 	}
@@ -59,43 +60,44 @@ func TestBadRequest(t *testing.T) {
 	rr = httptest.NewRecorder()
 	expected = "Неверный запрос: wrong request body"
 	handler.ServeHTTP(rr, req)
-	test.HandleBadReq(t, rr, expected)
+	HandleBadReq(t, rr, expected)
 }
 
-// TestUnauthorized тестирует случай, когда не удалось пройти аутентификацию
-func TestUnauthorized(t *testing.T) {
-	arq := uhd.AuthRequest{Username: "user1", Password: "password2"}
-	data, err := json.Marshal(arq)
+// TestSendCoinsUnauthorized тестирует случай, когда не удалось пройти аутентификацию
+func TestSendCoinsUnauthorized(t *testing.T) {
+	srq := uhd.SendCoinRequest{ToUser: "user1", Amount: 5}
+	data, err := json.Marshal(srq)
 	if err != nil {
 		t.Fatalf("Ошибка сериализации тела запроса клиента: %v", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, authUrl, bytes.NewBuffer(data))
+	req, err := http.NewRequest(http.MethodPost, sendUrl, bytes.NewBuffer(data))
 	if err != nil {
 		t.Fatal("Ошибка создания объекта *http.Request:", err)
 	}
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(uhr.GetAuthenticated)
+	handler := http.HandlerFunc(uhr.SendCoins)
 	handler.ServeHTTP(rr, req)
 	if rr.Code != http.StatusUnauthorized {
 		t.Errorf("Ожидался код состояния ответа: %d, но получен: %d", http.StatusUnauthorized, rr.Code)
 	}
 }
 
-// TestOK тестирует успешный ответ
-func TestOK(t *testing.T) {
-	arq := uhd.AuthRequest{Username: "user3", Password: "password3"}
-	data, err := json.Marshal(arq)
+// TestSendCoinsOK тестирует успешный ответ
+func TestSendCoinsOK(t *testing.T) {
+	sess := &session.Session{ID: "1", UserName: "user1"}
+	ctx := context.WithValue(context.Background(), session.SessionKey, sess)
+	srq := uhd.SendCoinRequest{ToUser: "user2", Amount: 15}
+	data, err := json.Marshal(srq)
 	if err != nil {
 		t.Fatalf("Ошибка сериализации тела запроса клиента: %v", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, authUrl, bytes.NewBuffer(data))
-	if err != nil {
-		t.Fatal("Ошибка создания объекта *http.Request:", err)
-	}
+	req := httptest.NewRequest(http.MethodPost, sendUrl, bytes.NewBuffer(data)).WithContext(ctx)
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(uhr.GetAuthenticated)
-	handler.ServeHTTP(rr, req)
-	test.CheckCodeAndMime(t, rr)
+
+	uhr.SendCoins(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Errorf("Ожидался код состояния ответа: %d, но получен: %d", http.StatusOK, rr.Code)
+	}
 }

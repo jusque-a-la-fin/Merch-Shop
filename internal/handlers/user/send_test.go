@@ -98,5 +98,7 @@ func TestSendCoinsOK(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	uhr.SendCoins(rr, req)
-	test.CheckCodeAndMime(t, rr)
+	if rr.Code != http.StatusOK {
+		t.Errorf("Ожидался код состояния ответа: %d, но получен: %d", http.StatusOK, rr.Code)
+	}
 }

@@ -26,6 +26,21 @@ func TestGetBadRequest(t *testing.T) {
 	test.HandleBadReq(t, rr, expected)
 }
 
+// TestGetUnauthorized тестирует случай, когда не удалось пройти аутентификацию
+func TestGetUnauthorized(t *testing.T) {
+	req, err := http.NewRequest(http.MethodGet, getUrl, nil)
+	if err != nil {
+		t.Fatal("Ошибка создания объекта *http.Request:", err)
+	}
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(uhr.GetInfo)
+	handler.ServeHTTP(rr, req)
+	if rr.Code != http.StatusUnauthorized {
+		t.Errorf("Ожидался код состояния ответа: %d, но получен: %d", http.StatusUnauthorized, rr.Code)
+	}
+}
+
 // TestGetCoinsOK тестирует успешный ответ
 func TestGetCoinsOK(t *testing.T) {
 	sess := &session.Session{ID: "1", UserName: "user1"}

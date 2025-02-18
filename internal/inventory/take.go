@@ -2,13 +2,13 @@ package inventory
 
 import "fmt"
 
-func (repo *InventoryDBRepostitory) TakeAnItem(userID int, itemType string) error {
+func (repo *InventoryDBRepostitory) TakeAnItem(userID string, itemType string) error {
 	var itemID int
 	repo.dtb.QueryRow("SELECT id FROM items WHERE item_type = $1;", itemType).Scan(&itemID)
 
 	exists := CheckInventory(repo.dtb, itemID)
 	if !exists {
-		query := `INSERT INTO inventory (user_id, item_id, quantity) VALUES ($1, $2, %3);`
+		query := `INSERT INTO inventory (user_id, item_id, quantity) VALUES ($1, $2, $3);`
 		_, err := repo.dtb.Exec(query, userID, itemID, 1)
 		if err != nil {
 			return fmt.Errorf("error while adding a new item: %v", err)

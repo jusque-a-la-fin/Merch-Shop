@@ -19,14 +19,6 @@ func (hnd *UserHandler) BuyAnItem(wrt http.ResponseWriter, rqt *http.Request) {
 	}
 
 	itemType := mux.Vars(rqt)["item"]
-	if itemType == "" {
-		errSend := handlers.SendBadReq(wrt, "an item is not present")
-		if errSend != nil {
-			log.Printf("error while sending the bad request message: %v\n", errSend)
-		}
-		return
-	}
-
 	price := hnd.InventoryRepo.GetPrice(itemType)
 	if price == nil {
 		log.Println("the item has not been found")
@@ -79,6 +71,5 @@ func (hnd *UserHandler) BuyAnItem(wrt http.ResponseWriter, rqt *http.Request) {
 		return
 	}
 
-	wrt.Header().Set("Content-Type", "application/json")
 	wrt.WriteHeader(http.StatusOK)
 }

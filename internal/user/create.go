@@ -11,7 +11,7 @@ func CreateUser(dtb *sql.DB, user User) (*User, error) {
 		return nil, err
 	}
 
-	var userID int
+	var userID string
 	query := `INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id;`
 	_ = dtb.QueryRow(query, user.Username, hashedPassword).Scan(&userID)
 

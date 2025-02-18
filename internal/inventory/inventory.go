@@ -1,9 +1,9 @@
 package inventory
 
 type InventoryRepo interface {
-	Get(userID int) ([]Item, error)
+	Get(userID string) ([]Item, error)
 	GetPrice(itemType string) *int
-	TakeAnItem(userID int, itemType string) error
+	TakeAnItem(userID string, itemType string) error
 }
 
 type Item struct {

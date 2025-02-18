@@ -7,10 +7,10 @@ import (
 
 func (repo *CoinsDBRepostitory) SendCoins(transaction TransactionInDetail) (int, error) {
 	if transaction.Balance-transaction.Amount < 0 {
-		return 400, fmt.Errorf("unsufficient balance")
+		return 400, fmt.Errorf("insufficient balance")
 	}
 
-	receiverID := utils.GetUserID(repo.dtb, transaction.ReceiverName)
+	receiverID := utils.GeReceiverID(repo.dtb, transaction.ReceiverName)
 
 	exists := utils.CheckUser(repo.dtb, transaction.ReceiverName)
 	if !exists {

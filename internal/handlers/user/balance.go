@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (hnd *UserHandler) GetBalance(wrt http.ResponseWriter, rqt *http.Request) (*int, *int) {
+func (hnd *UserHandler) GetBalance(wrt http.ResponseWriter, rqt *http.Request) (*int, *string) {
 	thisUser, err := hnd.GetUser(wrt, rqt)
 	if err != nil {
 		errSend := handlers.SendUnauthorized(wrt, err.Error())

@@ -1,8 +1,8 @@
 package coins
 
 type CoinsRepo interface {
-	GetBalance(userID int) (*int, error)
-	GetHistory(userID int) (*History, error)
+	GetBalance(userID string) (*int, error)
+	GetHistory(userID string) (*History, error)
 	SendCoins(transaction TransactionInDetail) (int, error)
 }
 
@@ -27,7 +27,7 @@ type Transaction struct {
 }
 
 type TransactionInDetail struct {
-	SenderID     int
+	SenderID     string
 	ReceiverName string
 	Balance      int
 	Amount       int

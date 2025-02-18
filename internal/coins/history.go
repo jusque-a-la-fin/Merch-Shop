@@ -6,7 +6,7 @@ import (
 	"merch-shop/internal/utils"
 )
 
-func (repo *CoinsDBRepostitory) GetHistory(userID int) (*History, error) {
+func (repo *CoinsDBRepostitory) GetHistory(userID string) (*History, error) {
 	hst := &History{}
 	query := `SELECT sender_id, amount FROM coin_history WHERE receiver_id = $1;`
 	errStr := "error while selecting the history of the input transactions"
@@ -36,7 +36,7 @@ func (repo *CoinsDBRepostitory) GetHistory(userID int) (*History, error) {
 	return hst, nil
 }
 
-func GetTransactions(dtb *sql.DB, query, errStr string, userID int) ([]Transaction, error) {
+func GetTransactions(dtb *sql.DB, query, errStr string, userID string) ([]Transaction, error) {
 	rows, err := dtb.Query(query, userID)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %v", errStr, err)
@@ -59,7 +59,7 @@ func GetTransactions(dtb *sql.DB, query, errStr string, userID int) ([]Transacti
 	return transactions, nil
 }
 
-func GetOutput(dtb *sql.DB, userID int) ([]Input, error) {
+func GetOutput(dtb *sql.DB, userID string) ([]Input, error) {
 	query := `SELECT receiver_id, amount FROM coin_history WHERE sender_id = $1;`
 	rows, err := dtb.Query(query, userID)
 	if err != nil {
@@ -70,7 +70,7 @@ func GetOutput(dtb *sql.DB, userID int) ([]Input, error) {
 	inputs := make([]Input, 0)
 	for rows.Next() {
 		inp := Input{}
-		var receiverID int
+		var receiverID string
 		err := rows.Scan(&receiverID, &inp.Amount)
 		if err != nil {
 			return nil, fmt.Errorf("error from method `Scan`, package sql: %v", err)

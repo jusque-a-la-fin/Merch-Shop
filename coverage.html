@@ -1,0 +1,1336 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>cmd: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">merch-shop/cmd/main.go (0.0%)</option>
+				
+				<option value="file1">merch-shop/internal/coins/balance.go (80.0%)</option>
+				
+				<option value="file2">merch-shop/internal/coins/history.go (52.9%)</option>
+				
+				<option value="file3">merch-shop/internal/coins/repo.go (100.0%)</option>
+				
+				<option value="file4">merch-shop/internal/coins/send.go (76.5%)</option>
+				
+				<option value="file5">merch-shop/internal/datastore/connect.go (90.0%)</option>
+				
+				<option value="file6">merch-shop/internal/handlers/error.go (78.6%)</option>
+				
+				<option value="file7">merch-shop/internal/handlers/user/auth.go (69.6%)</option>
+				
+				<option value="file8">merch-shop/internal/handlers/user/balance.go (52.6%)</option>
+				
+				<option value="file9">merch-shop/internal/handlers/user/buy.go (58.3%)</option>
+				
+				<option value="file10">merch-shop/internal/handlers/user/get.go (61.5%)</option>
+				
+				<option value="file11">merch-shop/internal/handlers/user/send.go (40.0%)</option>
+				
+				<option value="file12">merch-shop/internal/handlers/user/user.go (100.0%)</option>
+				
+				<option value="file13">merch-shop/internal/inventory/check.go (100.0%)</option>
+				
+				<option value="file14">merch-shop/internal/inventory/get.go (80.0%)</option>
+				
+				<option value="file15">merch-shop/internal/inventory/price.go (100.0%)</option>
+				
+				<option value="file16">merch-shop/internal/inventory/repo.go (100.0%)</option>
+				
+				<option value="file17">merch-shop/internal/inventory/take.go (85.7%)</option>
+				
+				<option value="file18">merch-shop/internal/middleware/auth.go (0.0%)</option>
+				
+				<option value="file19">merch-shop/internal/session/manager.go (24.0%)</option>
+				
+				<option value="file20">merch-shop/internal/session/session.go (80.0%)</option>
+				
+				<option value="file21">merch-shop/internal/user/auth.go (68.8%)</option>
+				
+				<option value="file22">merch-shop/internal/user/create.go (83.3%)</option>
+				
+				<option value="file23">merch-shop/internal/user/password.go (82.4%)</option>
+				
+				<option value="file24">merch-shop/internal/user/repo.go (83.3%)</option>
+				
+				<option value="file25">merch-shop/internal/utils/check.go (100.0%)</option>
+				
+				<option value="file26">merch-shop/internal/utils/get.go (66.7%)</option>
+				
+				<option value="file27">merch-shop/test/utils.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "log"
+        "merch-shop/internal/coins"
+        "merch-shop/internal/datastore"
+        uhd "merch-shop/internal/handlers/user"
+        "merch-shop/internal/inventory"
+        "merch-shop/internal/middleware"
+        "merch-shop/internal/session"
+        "merch-shop/internal/user"
+        "net/http"
+        "os"
+
+        "github.com/gorilla/mux"
+)
+
+func main() <span class="cov0" title="0">{
+        dtb, err := datastore.CreateNewDB()
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatalf("error while connecting to the database: %v", err)
+        }</span>
+
+        <span class="cov0" title="0">usr := user.NewDBRepo(dtb)
+        smg := session.NewSessionsManager()
+        coins := coins.NewDBRepo(dtb)
+        inv := inventory.NewDBRepo(dtb)
+        userHandler := &amp;uhd.UserHandler{
+                UserRepo:      usr,
+                Sessions:      smg,
+                CoinsRepo:     coins,
+                InventoryRepo: inv,
+        }
+
+        rtr := mux.NewRouter()
+        apiRouter := rtr.PathPrefix("/api").Subrouter()
+        apiRouter.HandleFunc("/info", requireAuth(smg, userHandler.GetInfo)).Methods("GET")
+        apiRouter.HandleFunc("/sendCoin", requireAuth(smg, userHandler.SendCoins)).Methods("POST")
+        apiRouter.HandleFunc("/buy/{item}", requireAuth(smg, userHandler.BuyAnItem)).Methods("GET")
+        apiRouter.HandleFunc("/auth", userHandler.GetAuthenticated).Methods("POST")
+
+        port := os.Getenv("SERVER_PORT")
+        err = http.ListenAndServe(":"+port, rtr)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatalf("ListenAndServe error: %v", err)
+        }</span>
+}
+
+func requireAuth(smg *session.SessionsManager, next http.HandlerFunc) http.HandlerFunc <span class="cov0" title="0">{
+        return func(wrt http.ResponseWriter, rqt *http.Request) </span><span class="cov0" title="0">{
+                middleware.Authenticate(smg, next).ServeHTTP(wrt, rqt)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package coins
+
+import (
+        "fmt"
+)
+
+func (repo *CoinsDBRepostitory) GetBalance(userID string) (*int, error) <span class="cov10" title="5">{
+        var balance int
+        err := repo.dtb.QueryRow("SELECT balance FROM coins_balance WHERE user_id = $1", userID).Scan(&amp;balance)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error while selecting the balance of coins: %v", err)
+        }</span>
+        <span class="cov10" title="5">return &amp;balance, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package coins
+
+import (
+        "database/sql"
+        "fmt"
+        "merch-shop/internal/utils"
+)
+
+func (repo *CoinsDBRepostitory) GetHistory(userID string) (*History, error) <span class="cov1" title="1">{
+        hst := &amp;History{}
+        query := `SELECT sender_id, amount FROM coin_history WHERE receiver_id = $1;`
+        errStr := "error while selecting the history of the input transactions"
+        transactions, err := GetTransactions(repo.dtb, query, errStr, userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov1" title="1">hst.Received = make([]Input, len(transactions))
+        for idx, transaction := range transactions </span><span class="cov0" title="0">{
+                hst.Received[idx].FromUser = transaction.User
+                hst.Received[idx].Amount = transaction.Amount
+        }</span>
+
+        <span class="cov1" title="1">errStr = "error while selecting the history of the output transactions"
+        query = `SELECT receiver_id, amount FROM coin_history WHERE sender_id = $1;`
+        transactions, err = GetTransactions(repo.dtb, query, errStr, userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov1" title="1">hst.Sent = make([]Output, len(transactions))
+        for idx, transaction := range transactions </span><span class="cov10" title="4">{
+                hst.Sent[idx].ToUser = transaction.User
+                hst.Sent[idx].Amount = transaction.Amount
+        }</span>
+
+        <span class="cov1" title="1">return hst, nil</span>
+}
+
+func GetTransactions(dtb *sql.DB, query, errStr string, userID string) ([]Transaction, error) <span class="cov5" title="2">{
+        rows, err := dtb.Query(query, userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("%s: %v", errStr, err)
+        }</span>
+        <span class="cov5" title="2">defer rows.Close()
+
+        transactions := make([]Transaction, 0)
+        for rows.Next() </span><span class="cov10" title="4">{
+                transaction := Transaction{}
+                err := rows.Scan(&amp;transaction.User, &amp;transaction.Amount)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("error from method `Scan`, package sql: %v", err)
+                }</span>
+                <span class="cov10" title="4">transactions = append(transactions, transaction)</span>
+        }
+
+        <span class="cov5" title="2">if err = rows.Err(); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error while iterating over rows returned by query: %v", err)
+        }</span>
+        <span class="cov5" title="2">return transactions, nil</span>
+}
+
+func GetOutput(dtb *sql.DB, userID string) ([]Input, error) <span class="cov0" title="0">{
+        query := `SELECT receiver_id, amount FROM coin_history WHERE sender_id = $1;`
+        rows, err := dtb.Query(query, userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error while selecting the history of the output transactions: %v", err)
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+
+        inputs := make([]Input, 0)
+        for rows.Next() </span><span class="cov0" title="0">{
+                inp := Input{}
+                var receiverID string
+                err := rows.Scan(&amp;receiverID, &amp;inp.Amount)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("error from method `Scan`, package sql: %v", err)
+                }</span>
+                <span class="cov0" title="0">inp.FromUser = utils.GetUsername(dtb, receiverID)
+                inputs = append(inputs, inp)</span>
+        }
+
+        <span class="cov0" title="0">if err = rows.Err(); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error while iterating over rows returned by query: %v", err)
+        }</span>
+        <span class="cov0" title="0">return inputs, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package coins
+
+import "database/sql"
+
+type CoinsDBRepostitory struct {
+        dtb *sql.DB
+}
+
+func NewDBRepo(sdb *sql.DB) *CoinsDBRepostitory <span class="cov8" title="1">{
+        return &amp;CoinsDBRepostitory{dtb: sdb}
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package coins
+
+import (
+        "fmt"
+        "merch-shop/internal/utils"
+)
+
+func (repo *CoinsDBRepostitory) SendCoins(transaction TransactionInDetail) (int, error) <span class="cov10" title="4">{
+        if transaction.Balance-transaction.Amount &lt; 0 </span><span class="cov0" title="0">{
+                return 400, fmt.Errorf("insufficient balance")
+        }</span>
+
+        <span class="cov10" title="4">receiverID := utils.GeReceiverID(repo.dtb, transaction.ReceiverName)
+
+        exists := utils.CheckUser(repo.dtb, transaction.ReceiverName)
+        if !exists </span><span class="cov5" title="2">{
+                exists := utils.CheckShop(repo.dtb, transaction.ReceiverName)
+                if !exists </span><span class="cov0" title="0">{
+                        return 400, fmt.Errorf("user or shop does not exist")
+                }</span>
+        }
+
+        <span class="cov10" title="4">query := `
+                     UPDATE coins_balance
+                     SET balance = $1
+                     WHERE user_id = $2;`
+
+        _, err := repo.dtb.Exec(query, transaction.Balance, transaction.SenderID)
+        if err != nil </span><span class="cov0" title="0">{
+                return 500, fmt.Errorf("error while updating the coins balance: %v", err)
+        }</span>
+
+        <span class="cov10" title="4">query = `INSERT INTO coin_history (sender_id, receiver_id, amount) VALUES ($1, $2, $3);`
+        _, err = repo.dtb.Exec(query, transaction.SenderID, receiverID, transaction.Amount)
+        if err != nil </span><span class="cov0" title="0">{
+                return 500, fmt.Errorf("error while adding new transaction: %v", err)
+        }</span>
+        <span class="cov10" title="4">return 200, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package datastore
+
+import (
+        "database/sql"
+        "fmt"
+        "os"
+
+        _ "github.com/lib/pq"
+)
+
+func CreateNewDB() (*sql.DB, error) <span class="cov8" title="1">{
+        username := os.Getenv("DATABASE_USER")
+        password := os.Getenv("DATABASE_PASSWORD")
+        host := os.Getenv("DATABASE_HOST")
+        port := os.Getenv("DATABASE_PORT")
+        database := os.Getenv("DATABASE_NAME")
+
+        connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", username, password, host, port, database)
+        dtb, err := sql.Open("postgres", connStr)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error while connecting to database: %v", err)
+        }</span>
+        <span class="cov8" title="1">return dtb, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package handlers
+
+import (
+        "encoding/json"
+        "fmt"
+        "net/http"
+)
+
+type ErrorResponse struct {
+        Reason string `json:"reason"`
+}
+
+func RespondWithError(wrt http.ResponseWriter, err string, statusCode int) error <span class="cov10" title="17">{
+        wrt.Header().Set("Content-Type", "application/json")
+        wrt.WriteHeader(statusCode)
+        errorResponse := ErrorResponse{Reason: err}
+        errJSON := json.NewEncoder(wrt).Encode(errorResponse)
+        return errJSON
+}</span>
+
+func SendBadReq(wrt http.ResponseWriter, errStr string) error <span class="cov9" title="13">{
+        err := fmt.Sprintf("Неверный запрос: %s", errStr)
+        errResp := RespondWithError(wrt, err, http.StatusBadRequest)
+        return errResp
+}</span>
+
+func SendInternalServerError(wrt http.ResponseWriter, errStr string) error <span class="cov0" title="0">{
+        err := fmt.Sprintf("Внутренняя ошибка сервера: %s", errStr)
+        errResp := RespondWithError(wrt, err, http.StatusInternalServerError)
+        return errResp
+}</span>
+
+func SendUnauthorized(wrt http.ResponseWriter, errStr string) error <span class="cov5" title="4">{
+        err := fmt.Sprintf("Неавторизован: %s", errStr)
+        errResp := RespondWithError(wrt, err, http.StatusUnauthorized)
+        return errResp
+}</span>
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package user
+
+import (
+        "encoding/json"
+        "log"
+        "merch-shop/internal/handlers"
+        "merch-shop/internal/user"
+        "net/http"
+)
+
+type AuthRequest struct {
+        Username string `json:"username"`
+        Password string `json:"password"`
+}
+
+func (hnd *UserHandler) GetAuthenticated(wrt http.ResponseWriter, rqt *http.Request) <span class="cov10" title="12">{
+        if rqt.Method != http.MethodPost </span><span class="cov3" title="2">{
+                errSend := handlers.SendBadReq(wrt, "wrong http method")
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the bad request message: %v\n", errSend)
+                }</span>
+                <span class="cov3" title="2">return</span>
+        }
+
+        <span class="cov9" title="10">var arq AuthRequest
+        err := json.NewDecoder(rqt.Body).Decode(&amp;arq)
+        if err != nil </span><span class="cov3" title="2">{
+                errSend := handlers.SendBadReq(wrt, "wrong request body")
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the bad request message: %v\n", errSend)
+                }</span>
+                <span class="cov3" title="2">return</span>
+        }
+
+        <span class="cov8" title="8">if arq.Username == "" || arq.Password == "" </span><span class="cov7" title="6">{
+                errSend := handlers.SendBadReq(wrt, "empty fields of request body")
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the bad request message: %v\n", errSend)
+                }</span>
+                <span class="cov7" title="6">return</span>
+        }
+
+        <span class="cov3" title="2">usr := user.User{
+                Username: arq.Username,
+                Password: arq.Password,
+        }
+
+        user, code, err := hnd.UserRepo.GetAuthenticated(usr)
+        if err != nil </span><span class="cov1" title="1">{
+                log.Println(err)
+        }</span>
+
+        <span class="cov3" title="2">switch code </span>{
+        case 401:<span class="cov1" title="1">
+                errSend := handlers.SendUnauthorized(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the unauthorized error message: %v\n", errSend)
+                }</span>
+                <span class="cov1" title="1">return</span>
+
+        case 500:<span class="cov0" title="0">
+                errSend := handlers.SendInternalServerError(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the internal server error message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return</span>
+        }
+
+        <span class="cov1" title="1">tokenString := hnd.CreateSessionAndToken(wrt, user)
+        AuthResponse := struct {
+                Token string `json:"token"`
+        }{
+                Token: tokenString,
+        }
+
+        wrt.Header().Set("Content-Type", "application/json")
+        wrt.WriteHeader(http.StatusOK)
+        errJSON := json.NewEncoder(wrt).Encode(AuthResponse)
+        if errJSON != nil </span><span class="cov0" title="0">{
+                log.Printf("error while sending response body: %v\n", errJSON)
+        }</span>
+}
+
+func (hnd *UserHandler) CreateSessionAndToken(wrt http.ResponseWriter, thisUser *user.User) string <span class="cov1" title="1">{
+        sess := hnd.Sessions.CreateSession(*thisUser)
+        tokenString, errToken := hnd.Sessions.CreateJWTtoken(sess)
+        if errToken != nil </span><span class="cov0" title="0">{
+                errSend := handlers.SendInternalServerError(wrt, errToken.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the internal server error message: %v\n", errSend)
+                }</span>
+
+                <span class="cov0" title="0">log.Println("error while creating the JWT token: ", errToken)
+                return ""</span>
+        }
+        <span class="cov1" title="1">return tokenString</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package user
+
+import (
+        "log"
+        "merch-shop/internal/handlers"
+        "net/http"
+)
+
+func (hnd *UserHandler) GetBalance(wrt http.ResponseWriter, rqt *http.Request) (*int, *string) <span class="cov10" title="8">{
+        thisUser, err := hnd.GetUser(wrt, rqt)
+        if err != nil </span><span class="cov5" title="3">{
+                errSend := handlers.SendUnauthorized(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the unauthorized error message: %v\n", errSend)
+                }</span>
+                <span class="cov5" title="3">return nil, nil</span>
+        }
+
+        <span class="cov7" title="5">userID, err := hnd.UserRepo.GetUserID(*thisUser)
+        if err != nil </span><span class="cov0" title="0">{
+                errSend := handlers.SendInternalServerError(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the internal server error message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return nil, nil</span>
+        }
+
+        <span class="cov7" title="5">balance, err := hnd.CoinsRepo.GetBalance(*userID)
+        if err != nil </span><span class="cov0" title="0">{
+                errSend := handlers.SendInternalServerError(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the internal server error message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return nil, nil</span>
+        }
+        <span class="cov7" title="5">return balance, userID</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package user
+
+import (
+        "log"
+        "merch-shop/internal/coins"
+        "merch-shop/internal/handlers"
+        "net/http"
+
+        "github.com/gorilla/mux"
+)
+
+func (hnd *UserHandler) BuyAnItem(wrt http.ResponseWriter, rqt *http.Request) <span class="cov10" title="5">{
+        if rqt.Method != http.MethodGet </span><span class="cov1" title="1">{
+                errSend := handlers.SendBadReq(wrt, "wrong http method")
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the bad request message: %v\n", errSend)
+                }</span>
+                <span class="cov1" title="1">return</span>
+        }
+
+        <span class="cov8" title="4">itemType := mux.Vars(rqt)["item"]
+        price := hnd.InventoryRepo.GetPrice(itemType)
+        if price == nil </span><span class="cov1" title="1">{
+                log.Println("the item has not been found")
+                errSend := handlers.SendBadReq(wrt, "an item has not been found")
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the bad request message: %v\n", errSend)
+                }</span>
+                <span class="cov1" title="1">return</span>
+        }
+
+        <span class="cov7" title="3">balance, userID := hnd.GetBalance(wrt, rqt)
+        if balance == nil || userID == nil </span><span class="cov1" title="1">{
+                return
+        }</span>
+
+        <span class="cov4" title="2">transaction := coins.TransactionInDetail{
+                SenderID:     *userID,
+                ReceiverName: "avito-shop",
+                Balance:      *balance,
+                Amount:       *price,
+        }
+
+        code, err := hnd.CoinsRepo.SendCoins(transaction)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println(err)
+        }</span>
+
+        <span class="cov4" title="2">switch code </span>{
+        case 400:<span class="cov0" title="0">
+                errSend := handlers.SendBadReq(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the bad request message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return</span>
+
+        case 500:<span class="cov0" title="0">
+                errSend := handlers.SendInternalServerError(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the internal server error message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return</span>
+        }
+
+        <span class="cov4" title="2">err = hnd.InventoryRepo.TakeAnItem(*userID, itemType)
+        if err != nil </span><span class="cov0" title="0">{
+                errSend := handlers.SendInternalServerError(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the internal server error message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return</span>
+        }
+
+        <span class="cov4" title="2">wrt.WriteHeader(http.StatusOK)</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package user
+
+import (
+        "encoding/json"
+        "log"
+        "merch-shop/internal/coins"
+        "merch-shop/internal/handlers"
+        "merch-shop/internal/inventory"
+        "net/http"
+)
+
+func (hnd *UserHandler) GetInfo(wrt http.ResponseWriter, rqt *http.Request) <span class="cov10" title="3">{
+        if rqt.Method != http.MethodGet </span><span class="cov1" title="1">{
+                errSend := handlers.SendBadReq(wrt, "wrong http method")
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the bad request message: %v\n", errSend)
+                }</span>
+                <span class="cov1" title="1">return</span>
+        }
+
+        <span class="cov6" title="2">balance, userID := hnd.GetBalance(wrt, rqt)
+        if balance == nil || userID == nil </span><span class="cov1" title="1">{
+                return
+        }</span>
+
+        <span class="cov1" title="1">items, err := hnd.InventoryRepo.Get(*userID)
+        if err != nil </span><span class="cov0" title="0">{
+                errSend := handlers.SendInternalServerError(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the internal server error message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return</span>
+        }
+
+        <span class="cov1" title="1">history, err := hnd.CoinsRepo.GetHistory(*userID)
+        if err != nil </span><span class="cov0" title="0">{
+                errSend := handlers.SendInternalServerError(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the internal server error message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return</span>
+        }
+
+        <span class="cov1" title="1">InfoResponse := struct {
+                Coins       int              `json:"coins"`
+                Inventory   []inventory.Item `json:"inventory"`
+                CoinHistory coins.History    `json:"coinHistory"`
+        }{
+                Coins:       *balance,
+                Inventory:   items,
+                CoinHistory: *history,
+        }
+
+        wrt.Header().Set("Content-Type", "application/json")
+        wrt.WriteHeader(http.StatusOK)
+        errJSON := json.NewEncoder(wrt).Encode(InfoResponse)
+        if errJSON != nil </span><span class="cov0" title="0">{
+                log.Printf("error while sending response body: %v\n", errJSON)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package user
+
+import (
+        "encoding/json"
+        "log"
+        "merch-shop/internal/coins"
+        "merch-shop/internal/handlers"
+        "net/http"
+)
+
+type SendCoinRequest struct {
+        ToUser string `json:"toUser"`
+        Amount int    `json:"amount"`
+}
+
+func (hnd *UserHandler) SendCoins(wrt http.ResponseWriter, rqt *http.Request) <span class="cov10" title="3">{
+        if rqt.Method != http.MethodPost </span><span class="cov0" title="0">{
+                errSend := handlers.SendBadReq(wrt, "wrong http method")
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the bad request message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return</span>
+        }
+
+        <span class="cov10" title="3">var srq SendCoinRequest
+        err := json.NewDecoder(rqt.Body).Decode(&amp;srq)
+        if err != nil </span><span class="cov0" title="0">{
+                errSend := handlers.SendBadReq(wrt, "wrong request body")
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the bad request message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return</span>
+        }
+
+        <span class="cov10" title="3">if srq.ToUser == "" || srq.Amount == 0 </span><span class="cov0" title="0">{
+                errSend := handlers.SendBadReq(wrt, "empty fields of request body")
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the bad request message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return</span>
+        }
+
+        <span class="cov10" title="3">balance, userID := hnd.GetBalance(wrt, rqt)
+        if balance == nil || userID == nil </span><span class="cov1" title="1">{
+                return
+        }</span>
+
+        <span class="cov6" title="2">transaction := coins.TransactionInDetail{
+                SenderID:     *userID,
+                ReceiverName: srq.ToUser,
+                Balance:      *balance,
+                Amount:       srq.Amount,
+        }
+
+        code, err := hnd.CoinsRepo.SendCoins(transaction)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println(err)
+        }</span>
+
+        <span class="cov6" title="2">switch code </span>{
+        case 400:<span class="cov0" title="0">
+                errSend := handlers.SendBadReq(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the bad request message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return</span>
+
+        case 500:<span class="cov0" title="0">
+                errSend := handlers.SendInternalServerError(wrt, err.Error())
+                if errSend != nil </span><span class="cov0" title="0">{
+                        log.Printf("error while sending the internal server error message: %v\n", errSend)
+                }</span>
+                <span class="cov0" title="0">return</span>
+        }
+
+        <span class="cov6" title="2">wrt.Header().Set("Content-Type", "application/json")
+        wrt.WriteHeader(http.StatusOK)</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package user
+
+import (
+        "merch-shop/internal/coins"
+        "merch-shop/internal/inventory"
+        "merch-shop/internal/session"
+        "merch-shop/internal/user"
+        "net/http"
+)
+
+type UserHandler struct {
+        UserRepo      user.UserRepo
+        Sessions      *session.SessionsManager
+        CoinsRepo     coins.CoinsRepo
+        InventoryRepo inventory.InventoryRepo
+}
+
+func (hnd *UserHandler) GetUser(wrt http.ResponseWriter, rqt *http.Request) (*user.User, error) <span class="cov10" title="8">{
+        thisSession, errSession := session.SessionFromContext(rqt.Context())
+        if errSession != nil </span><span class="cov5" title="3">{
+                return nil, errSession
+        }</span>
+
+        <span class="cov7" title="5">thisUser := &amp;user.User{}
+        thisUser.Username = thisSession.UserName
+        return thisUser, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package inventory
+
+import "database/sql"
+
+func CheckInventory(dtb *sql.DB, itemID int) bool <span class="cov10" title="2">{
+        var exists bool
+        query := `SELECT EXISTS(SELECT 1 FROM inventory WHERE item_id = $1);`
+        dtb.QueryRow(query, itemID).Scan(&amp;exists)
+        return exists
+}</span>
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package inventory
+
+import (
+        "fmt"
+)
+
+func (repo *InventoryDBRepostitory) Get(userID string) ([]Item, error) <span class="cov8" title="1">{
+        query := `SELECT itm.item_type, inv.quantity 
+                   FROM inventory inv 
+                           JOIN items itm ON inv.item_id = itm.id 
+                           WHERE inv.user_id = $1;`
+
+        rows, err := repo.dtb.Query(query, userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error while selecting the inventory info: %v", err)
+        }</span>
+        <span class="cov8" title="1">defer rows.Close()
+
+        items := make([]Item, 0)
+        for rows.Next() </span><span class="cov8" title="1">{
+                var item Item
+                err := rows.Scan(&amp;item.Item_type, &amp;item.Quantity)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("error from method `Scan`, package sql: %v", err)
+                }</span>
+                <span class="cov8" title="1">items = append(items, item)</span>
+        }
+
+        <span class="cov8" title="1">if err = rows.Err(); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error while iterating over rows returned by query: %v", err)
+        }</span>
+
+        <span class="cov8" title="1">return items, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package inventory
+
+import "merch-shop/internal/utils"
+
+func (repo *InventoryDBRepostitory) GetPrice(itemType string) *int <span class="cov10" title="4">{
+        exists := utils.CheckItem(repo.dtb, itemType)
+        if !exists </span><span class="cov1" title="1">{
+                return nil
+        }</span>
+
+        <span class="cov8" title="3">var price int
+        repo.dtb.QueryRow("SELECT price FROM items WHERE item_type = $1;", itemType).Scan(&amp;price)
+        return &amp;price</span>
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package inventory
+
+import "database/sql"
+
+type InventoryDBRepostitory struct {
+        dtb *sql.DB
+}
+
+func NewDBRepo(sdb *sql.DB) *InventoryDBRepostitory <span class="cov8" title="1">{
+        return &amp;InventoryDBRepostitory{dtb: sdb}
+}</span>
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package inventory
+
+import "fmt"
+
+func (repo *InventoryDBRepostitory) TakeAnItem(userID string, itemType string) error <span class="cov10" title="2">{
+        var itemID int
+        repo.dtb.QueryRow("SELECT id FROM items WHERE item_type = $1;", itemType).Scan(&amp;itemID)
+
+        exists := CheckInventory(repo.dtb, itemID)
+        if !exists </span><span class="cov1" title="1">{
+                query := `INSERT INTO inventory (user_id, item_id, quantity) VALUES ($1, $2, $3);`
+                _, err := repo.dtb.Exec(query, userID, itemID, 1)
+                if err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("error while adding a new item: %v", err)
+                }</span>
+                <span class="cov1" title="1">return nil</span>
+        }
+
+        <span class="cov1" title="1">query := `
+                     UPDATE inventory
+                     SET quantity = quantity + 1
+                     WHERE user_id = $1 AND item_id = $2;`
+
+        _, err := repo.dtb.Exec(query, userID, itemID)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("error while updating the quantity of the item: %v", err)
+        }</span>
+        <span class="cov1" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package middleware
+
+import (
+        "merch-shop/internal/session"
+        "net/http"
+)
+
+func Authenticate(smg *session.SessionsManager, next http.Handler) http.Handler <span class="cov0" title="0">{
+        return http.HandlerFunc(func(wrt http.ResponseWriter, rqt *http.Request) </span><span class="cov0" title="0">{
+                sess, err := smg.Check(wrt, rqt)
+                if sess != nil &amp;&amp; err == nil </span><span class="cov0" title="0">{
+                        ctx := session.ContextWithSession(rqt.Context(), sess)
+                        next.ServeHTTP(wrt, rqt.WithContext(ctx))
+                        return
+                }</span>
+                <span class="cov0" title="0">next.ServeHTTP(wrt, rqt)</span>
+        })
+}
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package session
+
+import (
+        "fmt"
+        "merch-shop/internal/user"
+        "net/http"
+        "strings"
+        "sync"
+        "time"
+
+        "github.com/golang-jwt/jwt/v5"
+)
+
+type SessionsManager struct {
+        data map[string]*Session
+        mu   *sync.RWMutex
+}
+
+func NewSessionsManager() *SessionsManager <span class="cov8" title="1">{
+        return &amp;SessionsManager{
+                data: make(map[string]*Session, 10),
+                mu:   &amp;sync.RWMutex{},
+        }
+}</span>
+
+func (sm *SessionsManager) CreateSession(newUser user.User) *Session <span class="cov8" title="1">{
+        sess := NewSession(newUser)
+        return sess
+}</span>
+
+func (sm *SessionsManager) CreateJWTtoken(sess *Session) (string, error) <span class="cov8" title="1">{
+        token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+                "user": map[string]interface{}{
+                        "username": sess.UserName,
+                },
+                "iat": time.Now().Unix(),
+                "exp": time.Now().Unix() + 1300,
+        })
+        tokenString, err := token.SignedString(ExampleTokenSecret)
+
+        return tokenString, err
+}</span>
+
+func (sm *SessionsManager) Check(w http.ResponseWriter, r *http.Request) (*Session, error) <span class="cov0" title="0">{
+        inToken := r.Header.Get("Authorization")
+        if inToken == "" </span><span class="cov0" title="0">{
+                return nil, ErrNoAuth
+        }</span>
+
+        <span class="cov0" title="0">hashSecretGetter := func(token *jwt.Token) (interface{}, error) </span><span class="cov0" title="0">{
+                method, ok := token.Method.(*jwt.SigningMethodHMAC)
+                if !ok || method.Alg() != "HS256" </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("bad sign method")
+                }</span>
+                <span class="cov0" title="0">return ExampleTokenSecret, nil</span>
+        }
+
+        <span class="cov0" title="0">inToken = strings.Split(inToken, " ")[1]
+        token, errJwt := jwt.Parse(inToken, hashSecretGetter)
+        if errJwt != nil </span><span class="cov0" title="0">{
+                return nil, errJwt
+        }</span>
+
+        <span class="cov0" title="0">payload, ok := token.Claims.(jwt.MapClaims)
+        if ok </span><span class="cov0" title="0">{
+                sessClaims := payload["user"].(map[string]interface{})
+
+                sess := &amp;Session{}
+                sess.UserName = sessClaims["username"].(string)
+
+                return sess, nil
+        }</span>
+        <span class="cov0" title="0">return nil, ErrNoAuth</span>
+}
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package session
+
+import (
+        "context"
+        "crypto/rand"
+        "errors"
+        "fmt"
+        "log"
+        "merch-shop/internal/user"
+)
+
+type Session struct {
+        ID       string
+        UserName string
+}
+
+func NewSession(thisUser user.User) *Session <span class="cov1" title="1">{
+        randID := make([]byte, 16)
+        _, err := rand.Read(randID)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("error while creating session, %#v", err)
+        }</span>
+        <span class="cov1" title="1">return &amp;Session{
+                ID:       fmt.Sprintf("%x", randID),
+                UserName: thisUser.Username,
+        }</span>
+}
+
+type sessKey string
+
+var (
+        SessionKey         sessKey = sessKey("SessionKey")
+        ExampleTokenSecret         = []byte("ExampleTokenSecret")
+        ErrNoAuth                  = errors.New("no session found")
+)
+
+func SessionFromContext(ctx context.Context) (*Session, error) <span class="cov10" title="8">{
+        sess, ok := ctx.Value(SessionKey).(*Session)
+        if !ok || sess == nil </span><span class="cov5" title="3">{
+                return nil, ErrNoAuth
+        }</span>
+        <span class="cov7" title="5">return sess, nil</span>
+}
+
+func ContextWithSession(ctx context.Context, sess *Session) context.Context <span class="cov0" title="0">{
+        return context.WithValue(ctx, SessionKey, sess)
+}</span>
+</pre>
+		
+		<pre class="file" id="file21" style="display: none">package user
+
+import (
+        "fmt"
+        "merch-shop/internal/utils"
+)
+
+func (repo *UserDBRepostitory) GetAuthenticated(usr User) (*User, int, error) <span class="cov10" title="2">{
+        exists := utils.CheckUser(repo.dtb, usr.Username)
+        if exists </span><span class="cov1" title="1">{
+                passwordHash, err := GetPasswordHash(repo.dtb, usr.Username)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, 500, err
+                }</span>
+                <span class="cov1" title="1">check, err := CheckPassword(usr.Password, passwordHash)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, 500, err
+                }</span>
+                <span class="cov1" title="1">if !check </span><span class="cov1" title="1">{
+                        return nil, 401, fmt.Errorf("password is incorrect")
+                }</span>
+
+                <span class="cov0" title="0">thisUser := User{Username: usr.Username, Password: passwordHash}
+                return &amp;thisUser, 200, nil</span>
+        }
+
+        <span class="cov1" title="1">thisUser, err := CreateUser(repo.dtb, usr)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, 500, err
+        }</span>
+
+        <span class="cov1" title="1">return thisUser, 200, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">package user
+
+import (
+        "database/sql"
+        "fmt"
+)
+
+func CreateUser(dtb *sql.DB, user User) (*User, error) <span class="cov8" title="1">{
+        hashedPassword, err := HashPassword(user.Password)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">var userID string
+        query := `INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id;`
+        _ = dtb.QueryRow(query, user.Username, hashedPassword).Scan(&amp;userID)
+
+        query = `INSERT INTO receivers (id) VALUES ($1);`
+        _, err = dtb.Exec(query, userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error while creating a new user: %v", err)
+        }</span>
+
+        <span class="cov8" title="1">thisUser := User{Username: user.Username, Password: hashedPassword}
+        return &amp;thisUser, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file23" style="display: none">package user
+
+import (
+        "crypto/sha256"
+        "database/sql"
+        "encoding/hex"
+        "fmt"
+)
+
+func GetPasswordHash(dtb *sql.DB, username string) (string, error) <span class="cov1" title="1">{
+        var passwordHash string
+        err := dtb.QueryRow("SELECT password_hash FROM users WHERE username = $1;", username).Scan(&amp;passwordHash)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", fmt.Errorf("error while selecting the password_hash: %v", err)
+        }</span>
+        <span class="cov1" title="1">return passwordHash, nil</span>
+}
+
+func HashPassword(password string) (string, error) <span class="cov10" title="2">{
+        salt := "|3%$cris2QJlfs|R"
+
+        hasher := sha256.New()
+        _, err := hasher.Write([]byte(password + salt))
+        if err != nil </span><span class="cov0" title="0">{
+                return "", fmt.Errorf("error while hashing the password")
+        }</span>
+        <span class="cov10" title="2">hashedBytes := hasher.Sum(nil)
+
+        hashedPassword := hex.EncodeToString(hashedBytes)
+        return hashedPassword, nil</span>
+}
+
+func CheckPassword(password, passwordHash string) (bool, error) <span class="cov1" title="1">{
+        hashed, err := HashPassword(password)
+        if err != nil </span><span class="cov0" title="0">{
+                return false, err
+        }</span>
+        <span class="cov1" title="1">return hashed == passwordHash, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file24" style="display: none">package user
+
+import (
+        "database/sql"
+        "fmt"
+)
+
+type UserDBRepostitory struct {
+        dtb *sql.DB
+}
+
+func NewDBRepo(sdb *sql.DB) *UserDBRepostitory <span class="cov1" title="1">{
+        return &amp;UserDBRepostitory{dtb: sdb}
+}</span>
+
+func (repo *UserDBRepostitory) GetUserID(usr User) (*string, error) <span class="cov10" title="5">{
+        var userID string
+        err := repo.dtb.QueryRow("SELECT id FROM users WHERE username = $1;", usr.Username).Scan(&amp;userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error while selecting the user id: %v", err)
+        }</span>
+        <span class="cov10" title="5">return &amp;userID, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file25" style="display: none">package utils
+
+import (
+        "database/sql"
+)
+
+func CheckUser(dtb *sql.DB, username string) bool <span class="cov10" title="6">{
+        var exists bool
+        query := `SELECT EXISTS(SELECT 1 FROM users WHERE username = $1);`
+        dtb.QueryRow(query, username).Scan(&amp;exists)
+        return exists
+}</span>
+
+func CheckShop(dtb *sql.DB, shopname string) bool <span class="cov4" title="2">{
+        var exists bool
+        query := `SELECT EXISTS(SELECT 1 FROM shop WHERE shopname = $1);`
+        dtb.QueryRow(query, shopname).Scan(&amp;exists)
+        return exists
+}</span>
+
+func CheckItem(dtb *sql.DB, itemType string) bool <span class="cov7" title="4">{
+        var exists bool
+        query := `SELECT EXISTS(SELECT 1 FROM items WHERE item_type = $1);`
+        dtb.QueryRow(query, itemType).Scan(&amp;exists)
+        return exists
+}</span>
+</pre>
+		
+		<pre class="file" id="file26" style="display: none">package utils
+
+import (
+        "database/sql"
+)
+
+func GetUsername(dtb *sql.DB, userID string) string <span class="cov0" title="0">{
+        var username string
+        dtb.QueryRow("SELECT username FROM users WHERE id = $1;", userID).Scan(&amp;username)
+        return username
+}</span>
+
+func GeReceiverID(dtb *sql.DB, username string) string <span class="cov10" title="4">{
+        var userID string
+        dtb.QueryRow("SELECT id FROM users WHERE username = $1;", username).Scan(&amp;userID)
+        if userID != "" </span><span class="cov5" title="2">{
+                return userID
+        }</span>
+
+        <span class="cov5" title="2">dtb.QueryRow("SELECT id FROM shop WHERE shopname = $1;", username).Scan(&amp;userID)
+        return userID</span>
+}
+</pre>
+		
+		<pre class="file" id="file27" style="display: none">package test
+
+import (
+        "encoding/json"
+        "log"
+        "merch-shop/internal/coins"
+        "merch-shop/internal/datastore"
+        "merch-shop/internal/handlers"
+        uhd "merch-shop/internal/handlers/user"
+        "merch-shop/internal/inventory"
+        "merch-shop/internal/session"
+        "merch-shop/internal/user"
+        "net/http"
+        "net/http/httptest"
+        "testing"
+)
+
+func GetUserHandler() *uhd.UserHandler <span class="cov0" title="0">{
+        dtb, err := datastore.CreateNewDB()
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatalf("ошибка подключения к базе данных: %v", err)
+        }</span>
+
+        <span class="cov0" title="0">usr := user.NewDBRepo(dtb)
+        smg := session.NewSessionsManager()
+        coins := coins.NewDBRepo(dtb)
+        inv := inventory.NewDBRepo(dtb)
+        userHandler := &amp;uhd.UserHandler{
+                UserRepo:      usr,
+                Sessions:      smg,
+                CoinsRepo:     coins,
+                InventoryRepo: inv,
+        }
+
+        return userHandler</span>
+}
+
+func HandleBadReq(t *testing.T, rr *httptest.ResponseRecorder, expected string) <span class="cov0" title="0">{
+        code := rr.Code
+        if code != http.StatusBadRequest </span><span class="cov0" title="0">{
+                t.Errorf("Ожидался код состояния ответа: %d, но получен: %d", http.StatusBadRequest, code)
+        }</span>
+
+        <span class="cov0" title="0">HandleError(t, rr, expected)</span>
+}
+
+func HandleError(t *testing.T, rr *httptest.ResponseRecorder, expected string) <span class="cov0" title="0">{
+        if mime := rr.Header().Get("Content-Type"); mime != "application/json" </span><span class="cov0" title="0">{
+                t.Errorf("Заголовок Content-Type должен иметь MIME-тип application/json, но имеет %s", mime)
+        }</span>
+
+        <span class="cov0" title="0">var errResp handlers.ErrorResponse
+        err := json.Unmarshal(rr.Body.Bytes(), &amp;errResp)
+        if err != nil </span><span class="cov0" title="0">{
+                t.Fatalf("Ошибка десериализации тела ответа сервера: %v", err)
+        }</span>
+
+        <span class="cov0" title="0">result := errResp.Reason
+        if result != expected </span><span class="cov0" title="0">{
+                t.Errorf("Ожидалось %s, но получено %s", expected, result)
+        }</span>
+}
+
+func CheckCodeAndMime(t *testing.T, rr *httptest.ResponseRecorder) <span class="cov0" title="0">{
+        if rr.Code != http.StatusOK </span><span class="cov0" title="0">{
+                t.Errorf("Ожидался код состояния ответа: %d, но получен: %d", http.StatusOK, rr.Code)
+        }</span>
+
+        <span class="cov0" title="0">if mime := rr.Header().Get("Content-Type"); mime != "application/json" </span><span class="cov0" title="0">{
+                t.Errorf("Заголовок Content-Type должен иметь MIME-тип application/json, но имеет %s", mime)
+        }</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

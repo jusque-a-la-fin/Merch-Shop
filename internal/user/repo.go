@@ -13,8 +13,8 @@ func NewDBRepo(sdb *sql.DB) *UserDBRepostitory {
 	return &UserDBRepostitory{dtb: sdb}
 }
 
-func (repo *UserDBRepostitory) GetUserID(usr User) (*int, error) {
-	var userID int
+func (repo *UserDBRepostitory) GetUserID(usr User) (*string, error) {
+	var userID string
 	err := repo.dtb.QueryRow("SELECT id FROM users WHERE username = $1;", usr.Username).Scan(&userID)
 	if err != nil {
 		return nil, fmt.Errorf("error while selecting the user id: %v", err)

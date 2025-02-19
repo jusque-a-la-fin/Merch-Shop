@@ -12,6 +12,7 @@ import (
 	"merch-shop/internal/user"
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 )
 
@@ -21,10 +22,11 @@ func GetUserHandler() *uhd.UserHandler {
 		log.Fatalf("ошибка подключения к базе данных: %v", err)
 	}
 
-	usr := user.NewDBRepo(dtb)
+	var mutex sync.Mutex
+	usr := user.NewDBRepo(dtb, &mutex)
 	smg := session.NewSessionsManager()
-	coins := coins.NewDBRepo(dtb)
-	inv := inventory.NewDBRepo(dtb)
+	coins := coins.NewDBRepo(dtb, &mutex)
+	inv := inventory.NewDBRepo(dtb, &mutex)
 	userHandler := &uhd.UserHandler{
 		UserRepo:      usr,
 		Sessions:      smg,

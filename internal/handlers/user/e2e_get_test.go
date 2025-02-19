@@ -8,16 +8,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// E2E-тест на сценарий покупки мерча
-func TestBuyAnItem(t *testing.T) {
+// E2E-тест на сценарий получения информации
+func TestGetInfo(t *testing.T) {
 	rtr := mux.NewRouter()
-	rtr.HandleFunc("/api/buy/{item}", uhr.BuyAnItem).Methods("GET")
+	rtr.HandleFunc("/api/info", uhr.GetInfo).Methods("GET")
 
 	rtr.Use(setValueMiddleware)
 	ts := httptest.NewServer(rtr)
 	defer ts.Close()
 
-	req, err := http.NewRequest(http.MethodGet, ts.URL+"/api/buy/cup", nil)
+	req, err := http.NewRequest(http.MethodGet, ts.URL+"/api/info", nil)
 	if err != nil {
 		t.Fatalf("Failed to create request: %v", err)
 	}

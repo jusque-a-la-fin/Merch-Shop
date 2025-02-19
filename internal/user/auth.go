@@ -7,6 +7,9 @@ import (
 )
 
 func (repo *UserDBRepostitory) GetAuthenticated(usr User) (*User, int, error) {
+	repo.mutex.Lock()
+	defer repo.mutex.Unlock()
+
 	exists, err := utils.CheckUser(repo.dtb, usr.Username)
 	if err != nil {
 		log.Println(err)

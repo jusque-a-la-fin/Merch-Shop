@@ -6,6 +6,9 @@ import (
 )
 
 func (repo *CoinsDBRepostitory) SendCoins(transaction TransactionInDetail) (int, error) {
+	repo.mutex.Lock()
+	defer repo.mutex.Unlock()
+
 	if transaction.Balance-transaction.Amount < 0 {
 		return 400, fmt.Errorf("insufficient balance")
 	}
@@ -31,12 +34,13 @@ func (repo *CoinsDBRepostitory) SendCoins(transaction TransactionInDetail) (int,
 		}
 	}
 
+	newBalance := transaction.Balance - transaction.Amount
 	query := `
 		     UPDATE coins_balance
 		     SET balance = $1
 		     WHERE user_id = $2;`
 
-	_, err = repo.dtb.Exec(query, transaction.Balance, transaction.SenderID)
+	_, err = repo.dtb.Exec(query, newBalance, transaction.SenderID)
 	if err != nil {
 		return 500, fmt.Errorf("error while updating the coins balance: %v", err)
 	}

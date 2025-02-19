@@ -11,6 +11,7 @@ import (
 	"merch-shop/internal/user"
 	"net/http"
 	"os"
+	"sync"
 
 	"github.com/gorilla/mux"
 )
@@ -21,10 +22,11 @@ func main() {
 		log.Fatalf("error while connecting to the database: %v", err)
 	}
 
-	usr := user.NewDBRepo(dtb)
+	var mutex *sync.Mutex
+	usr := user.NewDBRepo(dtb, mutex)
 	smg := session.NewSessionsManager()
-	coins := coins.NewDBRepo(dtb)
-	inv := inventory.NewDBRepo(dtb)
+	coins := coins.NewDBRepo(dtb, mutex)
+	inv := inventory.NewDBRepo(dtb, mutex)
 	userHandler := &uhd.UserHandler{
 		UserRepo:      usr,
 		Sessions:      smg,

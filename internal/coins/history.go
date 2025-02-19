@@ -4,13 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 	"merch-shop/internal/utils"
+	"sync"
 )
 
 func (repo *CoinsDBRepostitory) GetHistory(userID string) (*History, error) {
 	hst := &History{}
 	query := `SELECT sender_id, amount FROM coin_history WHERE receiver_id = $1;`
 	errStr := "error while selecting the history of the input transactions"
-	transactions, err := GetTransactions(repo.dtb, query, errStr, userID)
+	transactions, err := GetTransactions(repo.dtb, repo.mutex, query, errStr, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +24,7 @@ func (repo *CoinsDBRepostitory) GetHistory(userID string) (*History, error) {
 
 	errStr = "error while selecting the history of the output transactions"
 	query = `SELECT receiver_id, amount FROM coin_history WHERE sender_id = $1;`
-	transactions, err = GetTransactions(repo.dtb, query, errStr, userID)
+	transactions, err = GetTransactions(repo.dtb, repo.mutex, query, errStr, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +37,10 @@ func (repo *CoinsDBRepostitory) GetHistory(userID string) (*History, error) {
 	return hst, nil
 }
 
-func GetTransactions(dtb *sql.DB, query, errStr string, userID string) ([]Transaction, error) {
+func GetTransactions(dtb *sql.DB, mutex *sync.Mutex, query, errStr string, userID string) ([]Transaction, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	rows, err := dtb.Query(query, userID)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %v", errStr, err)
@@ -59,7 +63,10 @@ func GetTransactions(dtb *sql.DB, query, errStr string, userID string) ([]Transa
 	return transactions, nil
 }
 
-func GetOutput(dtb *sql.DB, userID string) ([]Input, error) {
+func GetOutput(dtb *sql.DB, mutex *sync.Mutex, userID string) ([]Input, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	query := `SELECT receiver_id, amount FROM coin_history WHERE sender_id = $1;`
 	rows, err := dtb.Query(query, userID)
 	if err != nil {

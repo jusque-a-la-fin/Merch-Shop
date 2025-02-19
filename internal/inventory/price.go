@@ -6,6 +6,9 @@ import (
 )
 
 func (repo *InventoryDBRepostitory) GetPrice(itemType string) (*int, error) {
+	repo.mutex.Lock()
+	defer repo.mutex.Unlock()
+
 	exists, err := utils.CheckItem(repo.dtb, itemType)
 	if err != nil {
 		return nil, err

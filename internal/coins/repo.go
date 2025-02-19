@@ -1,11 +1,15 @@
 package coins
 
-import "database/sql"
+import (
+	"database/sql"
+	"sync"
+)
 
 type CoinsDBRepostitory struct {
-	dtb *sql.DB
+	dtb   *sql.DB
+	mutex *sync.Mutex
 }
 
-func NewDBRepo(sdb *sql.DB) *CoinsDBRepostitory {
-	return &CoinsDBRepostitory{dtb: sdb}
+func NewDBRepo(sdb *sql.DB, mutex *sync.Mutex) *CoinsDBRepostitory {
+	return &CoinsDBRepostitory{dtb: sdb, mutex: mutex}
 }

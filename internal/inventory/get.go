@@ -5,6 +5,9 @@ import (
 )
 
 func (repo *InventoryDBRepostitory) Get(userID string) ([]Item, error) {
+	repo.mutex.Lock()
+	defer repo.mutex.Unlock()
+
 	query := `SELECT itm.item_type, inv.quantity 
 	           FROM inventory inv 
 			   JOIN items itm ON inv.item_id = itm.id 

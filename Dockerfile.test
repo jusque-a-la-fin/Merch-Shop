@@ -12,5 +12,3 @@ COPY internal/ ./internal
 COPY migrations/ ./migrations
 
 ENV CGO_ENABLED=1
-
-CMD go test -v -race -cover ./... -coverprofile=coverage.out && go tool cover -html=coverage.out -o coverage.html

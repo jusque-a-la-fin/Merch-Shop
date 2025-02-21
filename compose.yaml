@@ -3,6 +3,7 @@ services:
       build:
         context: .
         dockerfile: Dockerfile
+      hostname: avito-shop-service
       container_name: avito-shop-service
       ports:
         - "8080:8080"
@@ -53,14 +54,20 @@ services:
         - DATABASE_PASSWORD=password
         - DATABASE_NAME=shop
         - DATABASE_HOST=db
+    command: >
+      sh -c "go test -v -race -cover ./... -coverprofile=coverage.out && 
+      go tool cover -html=coverage.out -o coverage.html; sh /scripts/writer.sh"
     depends_on:
       db:
         condition: service_healthy
     volumes:
       - .:/merch-shop
+      - ./scripts:/scripts
+      - shared-data:/data
     networks:
         - internal
 
+  # линтеры
   linters:
     build: 
       context: .
@@ -69,5 +76,23 @@ services:
     networks:
         - internal
 
+
+  # нагрузочное тестирование (Grafana k6)
+  k6:
+    image: grafana/k6
+    container_name: k6
+    entrypoint: ["sh", "/scripts/reader.sh"]
+    volumes:
+      - ./load_test.js:/load_test.js  
+      - ./scripts:/scripts
+      - shared-data:/data
+    depends_on:
+      - test
+    networks:
+        - internal 
+
 networks:
   internal:
+
+volumes:
+  shared-data:

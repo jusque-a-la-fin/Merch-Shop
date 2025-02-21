@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -20,5 +21,10 @@ func CreateNewDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error while connecting to database: %v", err)
 	}
+
+	dtb.SetMaxOpenConns(25)
+	dtb.SetMaxIdleConns(25)
+	dtb.SetConnMaxLifetime(5 * time.Minute)
+
 	return dtb, nil
 }

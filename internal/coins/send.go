@@ -6,14 +6,11 @@ import (
 )
 
 func (repo *CoinsDBRepostitory) SendCoins(transaction TransactionInDetail) (int, error) {
-	repo.mutex.Lock()
-	defer repo.mutex.Unlock()
-
 	if transaction.Balance-transaction.Amount < 0 {
 		return 400, fmt.Errorf("insufficient balance")
 	}
 
-	receiverID, err := utils.GeReceiverID(repo.dtb, transaction.ReceiverName)
+	receiverID, err := utils.GetReceiverID(repo.dtb, transaction.ReceiverName)
 	if err != nil {
 		return -1, nil
 	}

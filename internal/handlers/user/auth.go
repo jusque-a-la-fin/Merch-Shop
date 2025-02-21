@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"merch-shop/internal/handlers"
+	"merch-shop/internal/token"
 	"merch-shop/internal/user"
 	"net/http"
 )
@@ -49,7 +50,7 @@ func (hnd *UserHandler) GetAuthenticated(wrt http.ResponseWriter, rqt *http.Requ
 		Password: arq.Password,
 	}
 
-	user, code, err := hnd.UserRepo.GetAuthenticated(usr)
+	user, isnew, code, err := hnd.UserRepo.GetAuthenticated(usr)
 	if err != nil {
 		log.Println(err)
 	}
@@ -70,11 +71,16 @@ func (hnd *UserHandler) GetAuthenticated(wrt http.ResponseWriter, rqt *http.Requ
 		return
 	}
 
-	tokenString := hnd.CreateSessionAndToken(wrt, user)
+	if isnew {
+		hnd.UpdateBalance(wrt, rqt, user.Username)
+	}
+
+	tokenString := CreateToken(wrt, user)
 	resp := AuthResponse{
 		Token: tokenString,
 	}
 
+	rqt.Header.Set("Authorization", tokenString)
 	wrt.Header().Set("Content-Type", "application/json")
 	wrt.WriteHeader(http.StatusOK)
 	errJSON := json.NewEncoder(wrt).Encode(resp)
@@ -83,9 +89,8 @@ func (hnd *UserHandler) GetAuthenticated(wrt http.ResponseWriter, rqt *http.Requ
 	}
 }
 
-func (hnd *UserHandler) CreateSessionAndToken(wrt http.ResponseWriter, thisUser *user.User) string {
-	sess := hnd.Sessions.CreateSession(*thisUser)
-	tokenString, errToken := hnd.Sessions.CreateJWTtoken(sess)
+func CreateToken(wrt http.ResponseWriter, thisUser *user.User) string {
+	tokenString, errToken := token.CreateJWTtoken(thisUser.Username)
 	if errToken != nil {
 		errSend := handlers.SendInternalServerError(wrt, errToken.Error())
 		if errSend != nil {

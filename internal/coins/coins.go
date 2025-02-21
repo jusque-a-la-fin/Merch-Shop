@@ -2,6 +2,7 @@ package coins
 
 type CoinsRepo interface {
 	GetBalance(userID string) (*int, error)
+	UpdateBalance(userID string) error
 	GetHistory(userID string) (*History, error)
 	SendCoins(transaction TransactionInDetail) (int, error)
 }

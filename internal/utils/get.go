@@ -14,7 +14,7 @@ func GetUsername(dtb *sql.DB, userID string) (*string, error) {
 	return &username, nil
 }
 
-func GeReceiverID(dtb *sql.DB, username string) (*string, error) {
+func GetReceiverID(dtb *sql.DB, username string) (*string, error) {
 	var userID string
 	err := dtb.QueryRow("SELECT id FROM users WHERE username = $1;", username).Scan(&userID)
 	if err != nil {

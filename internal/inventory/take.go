@@ -9,7 +9,7 @@ func (repo *InventoryDBRepostitory) TakeAnItem(userID string, itemType string) e
 		return fmt.Errorf("error while selecting the id of the item: %v", err)
 	}
 
-	exists, err := CheckInventory(repo.dtb, repo.mutex, itemID)
+	exists, err := CheckInventory(repo.dtb, itemID)
 	if err != nil {
 		return err
 	}

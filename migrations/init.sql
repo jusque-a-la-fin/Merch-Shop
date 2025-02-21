@@ -66,7 +66,7 @@ INSERT INTO coin_history (sender_id, receiver_id, amount) VALUES
 CREATE TABLE coins_balance (
     id SERIAL PRIMARY KEY,
     balance INT NOT NULL,
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE
+    user_id UUID UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 
 INSERT INTO coins_balance (balance, user_id) VALUES 

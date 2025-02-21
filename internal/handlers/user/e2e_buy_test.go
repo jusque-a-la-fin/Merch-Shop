@@ -1,8 +1,13 @@
 package user_test
 
 import (
+	"bytes"
+	"encoding/json"
+	uhd "merch-shop/internal/handlers/user"
+	"merch-shop/internal/middleware"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -11,17 +16,42 @@ import (
 // E2E-тест на сценарий покупки мерча
 func TestBuyAnItem(t *testing.T) {
 	rtr := mux.NewRouter()
-	rtr.HandleFunc("/api/buy/{item}", uhr.BuyAnItem).Methods("GET")
+	rtr.HandleFunc("/api/auth", uhr.GetAuthenticated).Methods("POST")
+	rtr.HandleFunc("/api/buy/{item}", middleware.RequireAuth(uhr.BuyAnItem, dtb)).Methods("GET")
 
-	rtr.Use(setValueMiddleware)
+	arq := uhd.AuthRequest{Username: "user4", Password: "password4"}
+	data, err := json.Marshal(arq)
+	if err != nil {
+		t.Fatalf("Ошибка сериализации тела запроса клиента: %v", err)
+	}
+
+	req, err := http.NewRequest(http.MethodPost, authUrl, bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal("Ошибка создания объекта *http.Request:", err)
+	}
+	rr := httptest.NewRecorder()
+	rtr.ServeHTTP(rr, req)
+	CheckCodeAndMime(t, rr)
+
+	var authResp uhd.AuthResponse
+	if err := json.NewDecoder(rr.Body).Decode(&authResp); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	parts := strings.Split(authResp.Token, ".")
+	if len(parts) != 3 {
+		t.Fatalf("Ошибка: строка не является JWT-токеном: %v", err)
+	}
+
 	ts := httptest.NewServer(rtr)
 	defer ts.Close()
 
-	req, err := http.NewRequest(http.MethodGet, ts.URL+"/api/buy/cup", nil)
+	req, err = http.NewRequest(http.MethodGet, ts.URL+"/api/buy/cup", nil)
 	if err != nil {
 		t.Fatalf("Failed to create request: %v", err)
 	}
 
+	req.Header.Set("Authorization", authResp.Token)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {

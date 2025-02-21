@@ -11,7 +11,7 @@ import (
 )
 
 var authUrl = "/api/auth"
-var uhr = GetUserHandler()
+var uhr, dtb = GetUserHandler()
 var testsBadRequest = []uhd.AuthRequest{
 	{},
 	{Username: "username"},

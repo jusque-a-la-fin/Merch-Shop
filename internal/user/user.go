@@ -6,6 +6,6 @@ type User struct {
 }
 
 type UserRepo interface {
-	GetAuthenticated(usr User) (*User, int, error)
-	GetUserID(usr User) (*string, error)
+	GetAuthenticated(usr User) (*User, bool, int, error)
+	GetUserID(username string) (*string, error)
 }

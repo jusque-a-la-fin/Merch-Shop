@@ -1,6 +1,7 @@
 package user_test
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"merch-shop/internal/coins"
@@ -8,33 +9,28 @@ import (
 	"merch-shop/internal/handlers"
 	uhd "merch-shop/internal/handlers/user"
 	"merch-shop/internal/inventory"
-	"merch-shop/internal/session"
 	"merch-shop/internal/user"
 	"net/http"
 	"net/http/httptest"
-	"sync"
 	"testing"
 )
 
-func GetUserHandler() *uhd.UserHandler {
+func GetUserHandler() (*uhd.UserHandler, *sql.DB) {
 	dtb, err := datastore.CreateNewDB()
 	if err != nil {
 		log.Fatalf("ошибка подключения к базе данных: %v", err)
 	}
 
-	var mutex sync.Mutex
-	usr := user.NewDBRepo(dtb, &mutex)
-	smg := session.NewSessionsManager()
-	coins := coins.NewDBRepo(dtb, &mutex)
-	inv := inventory.NewDBRepo(dtb, &mutex)
+	usr := user.NewDBRepo(dtb)
+	coins := coins.NewDBRepo(dtb)
+	inv := inventory.NewDBRepo(dtb)
 	userHandler := &uhd.UserHandler{
 		UserRepo:      usr,
-		Sessions:      smg,
 		CoinsRepo:     coins,
 		InventoryRepo: inv,
 	}
 
-	return userHandler
+	return userHandler, dtb
 }
 
 func HandleBadReq(t *testing.T, rr *httptest.ResponseRecorder, expected string) {

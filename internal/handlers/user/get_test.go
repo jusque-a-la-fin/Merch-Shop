@@ -1,10 +1,12 @@
 package user_test
 
 import (
-	"context"
-	"merch-shop/internal/session"
+	"bytes"
+	"encoding/json"
+	uhd "merch-shop/internal/handlers/user"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -42,12 +44,35 @@ func TestGetUnauthorized(t *testing.T) {
 
 // TestGetCoinsOK тестирует успешный ответ
 func TestGetCoinsOK(t *testing.T) {
-	sess := &session.Session{ID: "1", UserName: "user1"}
-	ctx := context.WithValue(context.Background(), session.SessionKey, sess)
+	arq := uhd.AuthRequest{Username: "user4", Password: "password4"}
+	data, err := json.Marshal(arq)
+	if err != nil {
+		t.Fatalf("Ошибка сериализации тела запроса клиента: %v", err)
+	}
 
-	req := httptest.NewRequest(http.MethodGet, getUrl, nil).WithContext(ctx)
+	req, err := http.NewRequest(http.MethodPost, authUrl, bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal("Ошибка создания объекта *http.Request:", err)
+	}
 	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(uhr.GetAuthenticated)
+	handler.ServeHTTP(rr, req)
+	CheckCodeAndMime(t, rr)
 
-	uhr.GetInfo(rr, req)
+	var authResp uhd.AuthResponse
+	if err := json.NewDecoder(rr.Body).Decode(&authResp); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	parts := strings.Split(authResp.Token, ".")
+	if len(parts) != 3 {
+		t.Fatalf("Ошибка: строка не является JWT-токеном: %v", err)
+	}
+
+	req = httptest.NewRequest(http.MethodGet, getUrl, nil)
+	req.Header.Set("Authorization", authResp.Token)
+	rr = httptest.NewRecorder()
+	handler = http.HandlerFunc(uhr.GetInfo)
+	handler.ServeHTTP(rr, req)
 	CheckCodeAndMime(t, rr)
 }

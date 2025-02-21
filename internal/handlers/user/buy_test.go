@@ -1,10 +1,13 @@
 package user_test
 
 import (
-	"context"
-	"merch-shop/internal/session"
+	"bytes"
+	"encoding/json"
+	uhd "merch-shop/internal/handlers/user"
+	"merch-shop/internal/middleware"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -29,7 +32,7 @@ func TestBuyBadRequest(t *testing.T) {
 		Url    string
 		ErrStr string
 	}{
-		{Url: "/api/buy/item", ErrStr: "Неверный запрос: an item has not been found"},
+		{Url: "/api/buy/item", ErrStr: "Неверный запрос: the item has not been found"},
 	}
 
 	rtr := mux.NewRouter()
@@ -66,13 +69,36 @@ func TestBuyUnauthorized(t *testing.T) {
 // TestBuyOK тестирует успешный ответ
 func TestBuyOK(t *testing.T) {
 	rtr := mux.NewRouter()
-	rtr.HandleFunc("/api/buy/{item}", uhr.BuyAnItem).Methods("GET")
+	rtr.HandleFunc("/api/auth", uhr.GetAuthenticated).Methods("POST")
+	rtr.HandleFunc("/api/buy/{item}", middleware.RequireAuth(uhr.BuyAnItem, dtb)).Methods("GET")
 
-	sess := &session.Session{ID: "1", UserName: "user1"}
-	ctx := context.WithValue(context.Background(), session.SessionKey, sess)
+	arq := uhd.AuthRequest{Username: "user4", Password: "password4"}
+	data, err := json.Marshal(arq)
+	if err != nil {
+		t.Fatalf("Ошибка сериализации тела запроса клиента: %v", err)
+	}
 
-	req := httptest.NewRequest(http.MethodGet, buyUrl, nil).WithContext(ctx)
+	req, err := http.NewRequest(http.MethodPost, authUrl, bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal("Ошибка создания объекта *http.Request:", err)
+	}
 	rr := httptest.NewRecorder()
+	rtr.ServeHTTP(rr, req)
+	CheckCodeAndMime(t, rr)
+
+	var authResp uhd.AuthResponse
+	if err := json.NewDecoder(rr.Body).Decode(&authResp); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	parts := strings.Split(authResp.Token, ".")
+	if len(parts) != 3 {
+		t.Fatalf("Ошибка: строка не является JWT-токеном: %v", err)
+	}
+
+	req = httptest.NewRequest(http.MethodGet, buyUrl, nil)
+	req.Header.Set("Authorization", authResp.Token)
+	rr = httptest.NewRecorder()
 	rtr.ServeHTTP(rr, req)
 	if rr.Code != http.StatusOK {
 		t.Errorf("Ожидался код состояния ответа: %d, но получен: %d", http.StatusOK, rr.Code)

@@ -26,7 +26,7 @@ func (hnd *UserHandler) BuyAnItem(wrt http.ResponseWriter, rqt *http.Request) {
 
 	if price == nil {
 		log.Println("the item has not been found")
-		errSend := handlers.SendBadReq(wrt, "an item has not been found")
+		errSend := handlers.SendBadReq(wrt, "the item has not been found")
 		if errSend != nil {
 			log.Printf("error while sending the bad request message: %v\n", errSend)
 		}
